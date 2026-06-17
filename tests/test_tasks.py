@@ -7,7 +7,7 @@ word = "Test Playwright 2"
 def test_task_creation(page: Page) -> None:
     page.goto("https://qa.cirakas.com/tasks")
     page.wait_for_timeout(2000)
-    # word = "Test Playwright"
+    word = "Test Playwright"
 
     # page.locator("a:nth-child(2)").first.click()
     page.get_by_role("button", name="+ Create Task").click()
@@ -47,9 +47,6 @@ from playwright.sync_api import Page, expect
 
 def test_task_edited(page: Page) -> None:
     page.goto("https://qa.cirakas.com/tasks/")
-    agree_btn = page.get_by_role("button",name="Accept")
-    expect(agree_btn).to_be_visible()
-    agree_btn.click()
     page.get_by_role('button', name= 'List' ).click()
     expect(page.get_by_text('Status')).to_be_visible(timeout=20000)
     page.get_by_text(word).click()
