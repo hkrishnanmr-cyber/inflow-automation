@@ -1,13 +1,17 @@
 import re
 from playwright.sync_api import Page, expect
+from datetime import datetime
 
-word = "Test Playwright 2"
+from conftest import page
 
 
+word = f"Task created using Playwright : {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}"
+
+
+#Task creation
 def test_task_creation(page: Page) -> None:
     page.goto("https://qa.cirakas.com/tasks")
     page.wait_for_timeout(2000)
-    word = "Test Playwright"
 
     # page.locator("a:nth-child(2)").first.click()
     page.get_by_role("button", name="+ Create Task").click()
@@ -17,7 +21,8 @@ def test_task_creation(page: Page) -> None:
     page.get_by_role("textbox", name="Description *").fill(word)
     page.get_by_role("combobox").filter(has_text="Select priority").click()
     page.get_by_label("Urgent (Within 4 days)").get_by_text("Urgent (Within 4 days)").click()
-    page.get_by_role("combobox").filter(has_text=re.compile(r"^Select project site$")).click()
+    page.get_by_role("button", name="Kazhakootam").click()
+    page.get_by_role("button", name="Kilimanoor").click()
     page.get_by_role("option", name="Kazhakootam").click()
     page.get_by_role("combobox", name="Type (Optional)").click()
     page.get_by_label("General").get_by_text("General").click()
@@ -28,23 +33,21 @@ def test_task_creation(page: Page) -> None:
     page.get_by_role("textbox", name="Search by title, description").fill("test")
     expect(page.get_by_text(word, exact=True).first).to_be_visible()
 
-
+#task sarch
 def test_task_search(page: Page) -> None:
     page.goto("https://qa.cirakas.com/tasks/")
     agree_btn = page.get_by_role("button",name="Accept")
-    expect(agree_btn).to_be_visible()
-    agree_btn.click()
+    if (agree_btn).is_visible():
+        agree_btn.click()
     page.get_by_role('button', name= 'List' ).click()
     expect(page.get_by_text('Status')).to_be_visible(timeout=20000)
-    word = "Test Playwright"
+    # word = f"Task created using Playwright : {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}"
     page.get_by_role("textbox", name="Search by title, description").click()
     page.get_by_role("textbox", name="Search by title, description").fill(word)
     expect(page.get_by_text(word).first).to_be_visible()
 
-import re
-from playwright.sync_api import Page, expect
 
-
+#task edit
 def test_task_edited(page: Page) -> None:
     page.goto("https://qa.cirakas.com/tasks/")
     page.get_by_role('button', name= 'List' ).click()

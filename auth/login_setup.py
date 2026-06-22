@@ -9,7 +9,7 @@ def save_auth():
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
-        name = "vivek"
+        name = "rajeev"
 
         # LOGIN
         page.goto("https://qa.cirakas.com/login")
@@ -23,10 +23,13 @@ def save_auth():
         otp_page.goto("https://yopmail.com/")
         otp_page.get_by_role("textbox",name="Login").fill(name)
         otp_page.wait_for_timeout(5000)
+        otp_page.get_by_role("textbox",name="Login").press("Enter")
+
         frame = otp_page.frame_locator('iframe[name="ifmail"]')
+
         otp = None
         for _ in range(10):
-            otp_page.get_by_title("Check Inbox @yopmail.com").click()
+            # otp_page.get_by_title("Check Inbox @yopmail.com").click()
             otp_page.wait_for_timeout(3000)
             body = frame.locator("body").inner_text()
             match = re.search(r"\d{6}",body)
@@ -41,8 +44,7 @@ def save_auth():
         page.get_by_role("textbox", name="Verification Code").fill(otp)
         page.get_by_role("button",name="Verify").click()
         expect(page.get_by_role("button",name="Accept")).to_be_visible()
-        page.get_by_role("button",name="Accept").click()
-        
+        page.get_by_role("button",name="Accept").click()        
 
         # SAVE SESSION
         context.storage_state(path=AUTH_FILE)
